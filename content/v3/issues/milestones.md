@@ -1,30 +1,32 @@
 ---
-title: Issue Milestones | GitHub API
+title: Issue Milestones
 ---
 
-# Milestones API
+# Milestones
+
+{:toc}
 
 ## List milestones for a repository
 
-    GET /repos/:user/:repo/milestones
+    GET /repos/:owner/:repo/milestones
 
-state
-: `open`, `closed`, default: `open`
+### Parameters
 
-sort
-: `due_date`, `completeness`, default: `due_date`
+Name | Type | Description
+-----|------|--------------
+`state`|`string` | The state of the milestone. Either `open`, `closed`, or `all`. Default: `open`
+`sort`|`string` | What to sort results by. Either `due_on` or `completeness`. Default: `due_on`
+`direction`|`string` | The direction of the sort. Either `asc` or `desc`. Default: `asc`
 
-direction
-: `asc` or `desc`, default: `desc`.
 
 ### Response
 
-<%= headers 200, :pagination => true %>
+<%= headers 200, :pagination => default_pagination_rels %>
 <%= json(:milestone) { |h| [h] } %>
 
 ## Get a single milestone
 
-    GET /repos/:user/:repo/milestones/:number
+    GET /repos/:owner/:repo/milestones/:number
 
 ### Response
 
@@ -33,59 +35,51 @@ direction
 
 ## Create a milestone
 
-    POST /repos/:user/:repo/milestones
+    POST /repos/:owner/:repo/milestones
 
 ### Input
 
-title
-: _Required_ **string**
+Name | Type | Description
+-----|------|---------------
+`title`|`string` | **Required**. The title of the milestone.
+`state`|`string` | The state of the milestone. Either `open` or `closed`. Default: `open`
+`description`|`string` | A description of the milestone.
+`due_on`|`string` | The milestone due date. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.
 
-state
-: _Optional_ **string** - `open` or `closed`. Default is `open`.
-
-description
-: _Optional_ **string**
-
-due\_on
-: _Optional_ **string** - ISO 8601 time.
+#### Example
 
 <%= json \
-  :title => "String",
-  :state => "open or closed",
-  :description => "String",
-  :due_on => "Time"
+  :title => "v1.0",
+  :state => "open",
+  :description => "Tracking milestone for version 1.0",
+  :due_on => "2012-10-09T23:39:01Z"
 %>
 
 ### Response
 
-<%= headers 201,
-      :Location =>
-"https://api.github.com/repos/user/repo/milestones/1" %>
+<%= headers 201, :Location => get_resource(:milestone)['url'] %>
 <%= json :milestone %>
 
 ## Update a milestone
 
-    PATCH /repos/:user/:repo/milestones/:number
+    PATCH /repos/:owner/:repo/milestones/:number
 
 ### Input
 
-title
-: _Required_ **string**
+Name | Type | Description
+-----|------|---------------
+`title`|`string` | The title of the milestone.
+`state`|`string` | The state of the milestone. Either `open` or `closed`. Default: `open`
+`description`|`string` | A description of the milestone.
+`due_on`|`string` | The milestone due date. This is a timestamp in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.
 
-state
-: _Optional_ **string** - `open` or `closed`. Default is `open`.
-
-description
-: _Optional_ **string**
-
-due\_on
-: _Optional_ **string** - ISO 8601 time.
+#### Example
 
 <%= json \
-  :title => "String",
-  :state => "open or closed",
-  :description => "String",
-  :due_on => "Time"
+  :title => "v1.0",
+  :state => "open",
+  :description => "Tracking milestone for version 1.0",
+  :due_on => "2012-10-09T23:39:01Z"
 %>
 
 ### Response
@@ -95,9 +89,8 @@ due\_on
 
 ## Delete a milestone
 
-    DELETE /repos/:user/:repo/milestones/:number
+    DELETE /repos/:owner/:repo/milestones/:number
 
 ### Response
 
 <%= headers 204 %>
-
